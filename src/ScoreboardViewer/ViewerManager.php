@@ -37,10 +37,6 @@ class ViewerManager
         ViewerManager::getInstance()->registerScoreboard($scoreboard); //register new scoreboard
     }
 
-    public function onJoin(PlayerJoinEvent $event): void{
-        ViewerManager::getInstance()->updateArgumentsForAll("new_scoreboard", "connected", count(Server::getInstance()->getOnlinePlayers()));
-    }
-
     public function register(Plugin $plugin): void{
         if (!$this->registered){
             $this->registered = true;
@@ -79,7 +75,7 @@ class ViewerManager
         $session->getScoreboard($identifier)->close();
     }
 
-    public function getCurrent(Player $player, string $idenfitifer): ?ScoreboardBuilder{
+    public function getCurrent(Player $player): ?ScoreboardBuilder{
         return $this->getSession($player)->getCurrent();
     }
 
