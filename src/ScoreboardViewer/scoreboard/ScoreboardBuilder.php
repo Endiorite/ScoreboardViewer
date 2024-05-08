@@ -60,7 +60,7 @@ class ScoreboardBuilder
         return $this;
     }
 
-    public function updateArguments(string $arguments, mixed $newValue, bool $updateLines){
+    public function updateArguments(string $arguments, mixed $newValue, bool $updateLines = true){
         $this->arguments[$arguments] = $newValue;
         if ($updateLines){
             $this->updateLines();

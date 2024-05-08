@@ -3,20 +3,43 @@
 namespace ScoreboardViewer;
 
 use pocketmine\event\Listener;
+use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\event\player\PlayerQuitEvent;
 use pocketmine\player\Player;
 use pocketmine\plugin\Plugin;
 use pocketmine\Server;
 use pocketmine\utils\SingletonTrait;
 use ScoreboardViewer\scoreboard\ScoreboardBuilder;
+use ScoreboardViewer\scoreboard\ScoreboardLineBuilder;
 
 class ViewerManager
 {
     use SingletonTrait;
 
     protected array $scoreboards = [];
+    /**
+     * @var PlayerSession[]
+     */
     protected array $players = [];
     protected bool $registered = false;
+
+    public function example(): void{
+        $scoreboard = ScoreboardBuilder::build("new_scoreboard")
+            ->setDisplayName("Scoreboard")
+            ->setObjectiveName("new_scoreboard")
+            ->addLine(ScoreboardLineBuilder::build("line1")
+                ->setIndex(0) //position of line
+                ->setObjective("Line 1"))
+            ->addLine(ScoreboardLineBuilder::build("line2")
+                ->setIndex(1)
+                ->setObjective("Player connected: {connected}"));
+
+        ViewerManager::getInstance()->registerScoreboard($scoreboard); //register new scoreboard
+    }
+
+    public function onJoin(PlayerJoinEvent $event): void{
+        ViewerManager::getInstance()->updateArgumentsForAll("new_scoreboard", "connected", count(Server::getInstance()->getOnlinePlayers()));
+    }
 
     public function register(Plugin $plugin): void{
         if (!$this->registered){
@@ -26,6 +49,12 @@ class ViewerManager
                     ViewerManager::getInstance()->closeSession($event->getPlayer());
                 }
             }, $plugin);
+        }
+    }
+
+    public function updateArgumentsForAll(string $scoreboardIdentifier, string $argument, string $value, bool $updateLines = true): void{
+        foreach ($this->players as $player){
+            $player->getScoreboard($scoreboardIdentifier)?->updateArguments($argument, $value, $updateLines);
         }
     }
 
