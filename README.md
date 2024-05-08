@@ -30,7 +30,7 @@ public function onJoin(PlayerJoinEvent $event): void{
 get current scoreboard of a player and update and update his arguments
 ```php
 $currentScoreboard = ViewerManager::getInstance()->getCurrent($player);
-$currentScoreboard->updateArguments("connected", -1); //modify the arguments only to this player and are current scoreboard
+$currentScoreboard?->updateArguments("connected", -1); //modify the arguments only to this player and are current scoreboard
 ```
 
 create a new scoreboard and set it as current scoreboard
