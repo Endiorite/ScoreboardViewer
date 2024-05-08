@@ -26,13 +26,12 @@ class ViewerManager
     public function example(): void{
         $scoreboard = ScoreboardBuilder::build("new_scoreboard")
             ->setDisplayName("Scoreboard")
-            ->setObjectiveName("new_scoreboard")
             ->addLine(ScoreboardLineBuilder::build("line1")
                 ->setIndex(0) //position of line
-                ->setObjective("Line 1"))
+                ->setContent("Line 1"))
             ->addLine(ScoreboardLineBuilder::build("line2")
                 ->setIndex(1)
-                ->setObjective("Player connected: {connected}"));
+                ->setContent("Player connected: {connected}"));
 
         ViewerManager::getInstance()->registerScoreboard($scoreboard); //register new scoreboard
     }
@@ -70,6 +69,7 @@ class ViewerManager
         $scoreboard->init();
         return $scoreboard;
     }
+
     public function closeScoreboard(Player $player, string $identifier): void{
         $session = $this->getSession($player);
         $session->getScoreboard($identifier)->close();

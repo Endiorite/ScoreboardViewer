@@ -8,9 +8,10 @@ use pocketmine\player\Player;
 
 class ScoreboardLineBuilder
 {
-    public string $objective = "";
+    public string $content = "";
     public int $index = 0;
     public string $identifier;
+    private string $objective = "";
 
     public function __construct(string $identifier)
     {
@@ -21,13 +22,18 @@ class ScoreboardLineBuilder
         return new self($identifier);
     }
 
+    public function setObjective(string $objective): self{
+        $this->objective = $objective;
+        return $this;
+    }
+
     /**
-     * @param string $objective
+     * @param string $content
      * @return ScoreboardLineBuilder
      */
-    public function setObjective(string $objective): self
+    public function setContent(string $content): self
     {
-        $this->objective = $objective;
+        $this->content = $content;
         return $this;
     }
 
@@ -59,26 +65,37 @@ class ScoreboardLineBuilder
 
     /**
      * @return string
-     */
-    public function getObjective(): string
-    {
-        return $this->objective;
-    }
+     */public function getContent(): string
+{
+    return $this->content;
+}
 
     public function update(Player $player, array $arguments): void
     {
-        $objective = $this->getObjective();
+        $content = $this->getContent();
         foreach ($arguments as $argument => $value){
-            $objective = str_replace("{" . $argument . "}", $value, $objective);
+            $content = str_replace("{" . $argument . "}", $value, $content);
         }
         $entry = new ScorePacketEntry();
         $entry->scoreboardId = $this->index;
-        $entry->objectiveName = $objective;
+        $entry->objectiveName = $this->objective;
         $entry->score = $this->index;
         $entry->type = $entry::TYPE_FAKE_PLAYER;
-        $entry->customName = $objective;
+        $entry->customName = $content;
         $pack = new SetScorePacket();
         $pack->type = $pack::TYPE_CHANGE;
+        $pack->entries[] = $entry;
+        $player->getNetworkSession()->sendDataPacket($pack);
+    }
+
+    public function close(Player $player): void{
+        $entry = new ScorePacketEntry();
+        $entry->scoreboardId = $this->index;
+        $entry->objectiveName = $this->objective;
+        $entry->score = $this->index;
+        $entry->type = $entry::TYPE_FAKE_PLAYER;
+        $pack = new SetScorePacket();
+        $pack->type = $pack::TYPE_REMOVE;
         $pack->entries[] = $entry;
         $player->getNetworkSession()->sendDataPacket($pack);
     }

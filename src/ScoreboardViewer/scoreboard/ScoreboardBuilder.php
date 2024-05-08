@@ -9,7 +9,9 @@ use pocketmine\player\Player;
 class ScoreboardBuilder
 {
     private string $displayName = "";
-    private string $objectiveName = "";
+    /**
+     * @var ScoreboardLineBuilder[]
+     */
     private array $lines = [];
     private ?Player $player = null;
     private string $identifier;
@@ -37,30 +39,13 @@ class ScoreboardBuilder
         return $this->displayName;
     }
 
-    /**
-     * @param string $objectiveName
-     * @return ScoreboardBuilder
-     */
-    public function setObjectiveName(string $objectiveName): self
-    {
-        $this->objectiveName = $objectiveName;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getObjectiveName(): string
-    {
-        return $this->objectiveName;
-    }
-
     public function addLine(ScoreboardLineBuilder $builder): self{
-        $this->lines[$builder->getIdentifier()] = $builder;
+        $this->lines[$builder->getIdentifier()] = $builder->setObjective($this->identifier);
         return $this;
     }
 
-    public function updateArguments(string $arguments, mixed $newValue, bool $updateLines = true){
+    public function updateArguments(string $arguments, mixed $newValue, bool $updateLines = true): void
+    {
         $this->arguments[$arguments] = $newValue;
         if ($updateLines){
             $this->updateLines();
@@ -85,7 +70,7 @@ class ScoreboardBuilder
     public function init(): void{
         $pack = new SetDisplayObjectivePacket();
         $pack->displaySlot = "sidebar";
-        $pack->objectiveName = $this->getObjectiveName();
+        $pack->objectiveName = $this->identifier;
         $pack->displayName = $this->getDisplayName();
         $pack->criteriaName = "dummy";
         $pack->sortOrder = 0;
@@ -94,8 +79,14 @@ class ScoreboardBuilder
 
     public function close(): void{
         $pack = new RemoveObjectivePacket();
-        $pack->objectiveName = $this->objectiveName;
+        $pack->objectiveName = $this->identifier;
         $this->player?->getNetworkSession()->sendDataPacket($pack);
+
+        if (!is_null($this->player)){
+            foreach ($this->lines as $line){
+                $line->close($this->player);
+            }
+        }
     }
 
     /**

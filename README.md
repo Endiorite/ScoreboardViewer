@@ -3,13 +3,12 @@ In the `onEnable` or `onLoad` of your plugin, register the new Scoreboard
 ```php
 $scoreboard = ScoreboardBuilder::build("new_scoreboard")
             ->setDisplayName("Scoreboard")
-            ->setObjectiveName("new_scoreboard")
             ->addLine(ScoreboardLineBuilder::build("line1")
                 ->setIndex(0) //position of line
-                ->setObjective("Line 1"))
+                ->setContent("Line 1"))
             ->addLine(ScoreboardLineBuilder::build("line2")
                 ->setIndex(1)
-                ->setObjective("Player connected: {connected}")); //with argument
+                ->setContent("Player connected: {connected}")); //with argument
         
 ViewerManager::getInstance()->registerScoreboard($scoreboard); //register new scoreboard
 ```
@@ -38,10 +37,9 @@ create a new scoreboard and set it as current scoreboard
 ```php
 $scoreboard = ScoreboardBuilder::build("second_scoreboard")
             ->setDisplayName("Scoreboard 2")
-            ->setObjectiveName("second_scoreboard")
             ->addLine(ScoreboardLineBuilder::build("line1")
                 ->setIndex(0) //position of line
-                ->setObjective("First Line of Second Scoreboard"))
+                ->setContent("First Line of Second Scoreboard"))
         
 ViewerManager::getInstance()->registerScoreboard($scoreboard); //register new scoreboard
 
