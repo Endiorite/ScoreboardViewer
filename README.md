@@ -9,7 +9,7 @@ $scoreboard = ScoreboardBuilder::build("new_scoreboard")
                 ->setObjective("Line 1"))
             ->addLine(ScoreboardLineBuilder::build("line2")
                 ->setIndex(1)
-                ->setObjective("Player connected: {connected}"));
+                ->setObjective("Player connected: {connected}")); //with argument
         
 ViewerManager::getInstance()->registerScoreboard($scoreboard); //register new scoreboard
 ```
