@@ -33,7 +33,7 @@ class ViewerManager
                 ->setIndex(1)
                 ->setContent("Player connected: {connected}"));
 
-        ViewerManager::getInstance()->registerScoreboard($scoreboard); //register new scoreboard
+        ViewerManager::getInstance()->registerScoreboard($scoreboard);
     }
 
     public function register(Plugin $plugin): void{

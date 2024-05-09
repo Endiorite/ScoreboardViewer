@@ -16,6 +16,7 @@ class ScoreboardBuilder
     private ?Player $player = null;
     private string $identifier;
     private array $arguments = [];
+    private bool $isCurrent = false;
 
     public function __construct(string $identifier)
     {
@@ -59,7 +60,7 @@ class ScoreboardBuilder
     }
 
     public function updateLine(string $lineIdentifier): void{
-        if (isset($this->lines[$lineIdentifier])){
+        if (isset($this->lines[$lineIdentifier]) && $this->isCurrent){
             $line = $this->lines[$lineIdentifier];
             if (!is_null($player = $this->getPlayer())){
                 $line->update($player, $this->arguments);
@@ -75,6 +76,7 @@ class ScoreboardBuilder
         $pack->criteriaName = "dummy";
         $pack->sortOrder = 0;
         $this->player?->getNetworkSession()->sendDataPacket($pack);
+        $this->updateLines();
     }
 
     public function close(): void{
@@ -111,5 +113,21 @@ class ScoreboardBuilder
     public function getIdentifier(): string
     {
         return $this->identifier;
+    }
+
+    /**
+     * @param bool $isCurrent
+     */
+    public function setIsCurrent(bool $isCurrent): void
+    {
+        $this->isCurrent = $isCurrent;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isCurrent(): bool
+    {
+        return $this->isCurrent;
     }
 }

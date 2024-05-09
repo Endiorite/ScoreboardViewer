@@ -59,8 +59,10 @@ class PlayerSession
     public function setCurrent(string $identifier): void{
         if(!is_null($current = $this->getCurrent())){
             $current->close();
+            $current->setIsCurrent(false);
         }
         $this->currentIdentifier = $identifier;
+        $this->getCurrent()->setIsCurrent(true);
         $this->getCurrent()->init();
     }
 
