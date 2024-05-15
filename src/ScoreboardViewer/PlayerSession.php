@@ -31,6 +31,7 @@ class PlayerSession
         $sb = [];
         foreach ($scoreboards as $scoreboard){
             $scoreboard->setPlayer($player);
+            $sb[$scoreboard->getIdentifier()] = $scoreboard;
         }
         $self->setScoreboards($sb);
         return $self;

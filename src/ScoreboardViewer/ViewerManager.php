@@ -16,12 +16,17 @@ class ViewerManager
 {
     use SingletonTrait;
 
-    protected array $scoreboards = [];
+    private array $scoreboards = [];
     /**
      * @var PlayerSession[]
      */
-    protected array $players = [];
-    protected bool $registered = false;
+    private array $players = [];
+    private bool $registered = false;
+
+    public function __construct()
+    {
+        self::setInstance($this);
+    }
 
     public function example(): void{
         $scoreboard = ScoreboardBuilder::build("new_scoreboard")

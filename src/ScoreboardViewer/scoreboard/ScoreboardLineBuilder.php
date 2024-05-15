@@ -76,6 +76,7 @@ class ScoreboardLineBuilder
         foreach ($arguments as $argument => $value){
             $content = str_replace("{" . $argument . "}", $value, $content);
         }
+        $this->close($player);
         $entry = new ScorePacketEntry();
         $entry->scoreboardId = $this->index;
         $entry->objectiveName = $this->objective;
