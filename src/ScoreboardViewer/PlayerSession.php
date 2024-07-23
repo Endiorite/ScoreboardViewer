@@ -30,8 +30,9 @@ class PlayerSession
         $self = new self($player);
         $sb = [];
         foreach ($scoreboards as $scoreboard){
-            $scoreboard->setPlayer($player);
-            $sb[$scoreboard->getIdentifier()] = $scoreboard;
+            $score = clone $scoreboard;
+            $score->setPlayer($player);
+            $sb[$score->getIdentifier()] = $score;
         }
         $self->setScoreboards($sb);
         return $self;
